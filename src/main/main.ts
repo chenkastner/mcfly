@@ -9,12 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import {getCategorized, searchResults} from './dataParser';
+import { getCategorized } from './dataParser';
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -25,10 +26,12 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+ipcMain.on('data-fetcher', async (event, arg) => {
+  // const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+  // console.log(`IPC test: ${pingPong}`);
+  const all = require('../../assets/commands.json');
+  // var cat = getCategorized(all);
+  event.reply('data-fetcher', all);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -39,9 +42,9 @@ if (process.env.NODE_ENV === 'production') {
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
-if (isDebug) {
-  require('electron-debug')();
-}
+// if (isDebug) {
+//   require('electron-debug')();
+// }
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -57,14 +60,9 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
-
   if (isDebug) {
     await installExtensions();
   }
-
-  // const all = require('../../assets/temp.json');
-  // var fits = searchResults(all, "cluster");
-  // var cat = getCategorized(all);
 
   const RESOURCES_PATH = app.isPackaged
     ? path.join(process.resourcesPath, 'assets')
@@ -99,6 +97,7 @@ const createWindow = async () => {
     }
   });
 
+  mainWindow.setVisibleOnAllWorkspaces(true);
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -132,7 +131,12 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
-    createWindow();
+    globalShortcut.register('CommandOrControl+M', () => {
+      if (!mainWindow) {
+        createWindow();
+      }
+      mainWindow.show();
+    });
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
