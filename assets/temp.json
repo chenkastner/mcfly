@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "category": "kafka",
+    "description": "Start kafka consumer",
+    "command": "/appsflyer/apps/kafka_2/bin/kafka-console-consumer.sh --bootstrap-server kafka-main-stg.skan-3240.msp.eu1.appsflyer.com:9092 --topic skad-aggregated-postbacks-facebook-1",
+    "weight": 1
+  },
+  {
+    "id": 2,
+    "category": "python",
+    "description": "Show current python dependencies",
+    "command": "pip freeze",
+    "weight": 2
+  },
+  {
+    "id": 3,
+    "category": "ssm",
+    "description": "Remote copy file",
+    "command":
+     "ssm spotmaster-20002-165-prod.eu1.appsflyer.com -u target/predict-pltv-processor-1.0.10.jar:/home/developer/predict-pltv-processor-1.0.10.jar",
+     "weight": 1
+  },
+  {
+    "id": 4,
+    "category": "ssm",
+    "description": "login to cluster 108",
+    "command":
+     "ssm spotmaster-20002-108-prod.eu1.appsflyer.com",
+     "weight": 2
+  },
+  {
+    "id": 5,
+    "category": "python",
+    "description": "find python path",
+    "command": "python which",
+    "weight": 1
+  },
+  {
+    "id": 6,
+    "category": "ssm",
+    "description": "login to cluster 165",
+    "command": "ssm spotmaster-20002-165-prod.eu1.appsflyer.com",
+    "weight": 3
+  }
+]
