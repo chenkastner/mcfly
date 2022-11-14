@@ -1,56 +1,91 @@
-// var path = require('path');
+var path = require('path');
+const electron = require('electron');
+const fs = require('fs');
+const defaults_path = '../../assets/commands.json';
+const userDataPath = electron.app.getPath('userData');
+const file_path = path.join(userDataPath, 'mcfly.json');
 
-// const file_name: string = "mcfly";
-// const path_to_file: string = path.join(__dirname, '')
 export type CommandEntry = {
-  id: string;
+  id: number;
   command: string;
   category: string;
   description: string;
   weight: number;
 };
 
-export const getCategorized = (all: any) => {
-  const categorized = [];
-  for (let i = 0; i < all.length; i++) {
-    const command = all[i];
-    const obj: any = { ...command };
-    delete obj.category;
-    if (command.category in categorized) {
-      categorized[command.category].push(obj);
-    } else {
-      categorized[command.category] = [obj];
-    }
+export class DataParser {
+  commands_json_arr : any;
+
+  constructor(){
+    this.commands_json_arr = parseDataFile(file_path);
   }
-  return categorized;
+
+  commandExists = (command: CommandEntry): boolean => {
+    this.commands_json_arr.forEach((entry: CommandEntry) => {
+      if (entry.command == command.command) {
+        return true;
+      }
+    });
+    return false;
+  }
+
+  getCategorized = () => {
+    const categorized = [];
+    for (var i = 0; i < this.commands_json_arr.length; i++) {
+      var command = this.commands_json_arr[i];
+      var obj: any = Object.assign({}, command);
+      delete obj.category;
+      if (command.category in categorized) {
+        categorized[command.category].push(obj);
+      } else {
+        categorized[command.category] = [obj];
+      }
+    }
+    return categorized;
+  };
+
+  sortByCommon = () => {
+    this.commands_json_arr.sort(function (a: any, b: any) {
+      return b.weight.localeCompare(a.weight);
+    });
+  };
+
+  addCommand = (command: CommandEntry) => {
+    if(this.commandExists(command)) return;
+    this.commands_json_arr.push(command);
+    fs.writeFileSync(file_path, JSON.stringify(this.commands_json_arr));
+  };
+
+  removeCommand = (command_entry: CommandEntry) => {
+    if (!this.commandExists(command_entry)) return;
+    let i = 0;
+    for (; i < this.commands_json_arr.length; i++) {
+      if (this.commands_json_arr[i].command == command_entry) {
+        delete this.commands_json_arr[i];
+      }
+    }
+    fs.writeFileSync(file_path, JSON.stringify(this.commands_json_arr));
+  };
+
+  setWeight = (command: string, weight: number) => {
+    this.commands_json_arr.forEach((entry: CommandEntry) => {
+      if (entry.command == command) {
+        entry.weight = weight;
+      }
+    });
+    fs.writeFileSync(file_path, JSON.stringify(this.commands_json_arr));
+  };
+}
+
+function parseDataFile(filePath: string){
+  // We'll try/catch it in case the file doesn't exist yet, which will be the case on the first application run.
+  // `fs.readFileSync` will return a JSON string which we then parse into a Javascript object
+  try {
+    return JSON.parse(fs.readFileSync(filePath));
+  } catch (error) {
+    const starter_commands = require(defaults_path);
+    fs.writeFileSync(filePath, JSON.stringify(starter_commands));
+    return starter_commands;
+  }
 };
 
-const sortByCommon = (all: any) => {
-  all.sort(function (a: any, b: any) {
-    return b.weight.localeCompare(a.weight);
-  });
-};
-
-// export const addCommand = (command: CommandEntry) => {
-
-// }
-
-// export const createCommandsFileIfNotExist = () => {
-//     //check if file exist
-//     if(fs.existsSync(filename)){
-//       //process if file exist
-//     }
-//     else{
-//       console.log("File doesn\'t exist.Creating new file")
-//       fs.writeFile(filename,'',(err)=>{
-//         if(err)
-//         console.log(err);
-//       })
-//     }
-
-// }
-
-// const all = require('../../assets/temp.json');
-// console.log("all:" + JSON.stringify(all));
-// const cat = getCategorized(all);
-// const comm = sortByCommon(all);
