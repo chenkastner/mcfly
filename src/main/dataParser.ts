@@ -31,15 +31,6 @@ const sortByCommon = (all: any) => {
   });
 };
 
-export const searchResults = (all: CommandEntry[], value: string) => {
-  const fits = all.filter((entry: CommandEntry) => {
-    console.log(entry);
-    const regex = new RegExp(`${value}`, 'gi');
-    return entry.command.match(regex) || entry.description.match(regex);
-  });
-  return fits;
-};
-
 // export const addCommand = (command: CommandEntry) => {
 
 // }
