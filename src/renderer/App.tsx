@@ -1,5 +1,8 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import './App.css';
 
 const { ipcRenderer } = window.electron;
@@ -18,19 +21,16 @@ const Hello = () => {
   return (
     <div>
       <h1>McFly</h1>
-      <button
-        onClick={() => {
-          ipcRenderer.sendMessage('data-fetcher', ['ping']);
-        }}
-      >
-        Get commands!
-      </button>
       <div className="Hello">
-        <ul>
-          {commands.map((cmd) => (
-            <li>{cmd.command}</li>
-          ))}
-        </ul>
+        <List>
+        {
+          commands.map((cmd) => (
+            <ListItem button onClick={() =>  navigator.clipboard.writeText(cmd.command)}>
+              <ListItemText primary={cmd.command} />
+            </ListItem>
+        ))
+        }
+        </List>
       </div>
     </div>
   );

@@ -14,7 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import {getCategorized, searchResults} from './dataParser';
+import { getCategorized, searchResults } from './dataParser';
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -28,35 +29,9 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on('data-fetcher', async (event, arg) => {
   // const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   // console.log(`IPC test: ${pingPong}`);
-  const mockData = [
-    {
-      id: 1,
-      category: 'kafka',
-      description: 'Start kafka consumer',
-      command:
-        '/appsflyer/apps/kafka_2/bin/kafka-console-consumer.sh --bootstrap-server kafka-main-stg.skan-3240.msp.eu1.appsflyer.com:9092 --topic skad-aggregated-postbacks-facebook-1',
-    },
-    {
-      id: 2,
-      category: 'python',
-      description: 'Show current python dependencies',
-      command: 'pip freeze',
-    },
-    {
-      id: 3,
-      category: 'ssm',
-      description: 'Remote copy file',
-      command:
-        'ssm spotmaster-20002-165-prod.eu1.appsflyer.com -u target/predict-pltv-processor-1.0.10.jar:/home/developer/predict-pltv-processor-1.0.10.jar',
-    },
-    {
-      id: 4,
-      category: 'Scala',
-      description: 'mvn build',
-      command: 'mvn package',
-    },
-  ];
-  event.reply('data-fetcher', mockData);
+  const all = require('../../assets/commands.json');
+  // var cat = getCategorized(all);
+  event.reply('data-fetcher', all);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -68,7 +43,7 @@ const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
-  require('electron-debug')();
+  // require('electron-debug')();
 }
 
 const installExtensions = async () => {
@@ -85,14 +60,9 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
-
   if (isDebug) {
     await installExtensions();
   }
-
-  // const all = require('../../assets/temp.json');
-  // var fits = searchResults(all, "cluster");
-  // var cat = getCategorized(all);
 
   const RESOURCES_PATH = app.isPackaged
     ? path.join(process.resourcesPath, 'assets')
@@ -161,7 +131,12 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
-    globalShortcut.register('CommandOrControl+M', createWindow);
+    globalShortcut.register('CommandOrControl+M', () => {
+      if (!mainWindow) {
+        createWindow();
+      }
+      mainWindow.show();
+    });
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

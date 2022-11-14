@@ -3,18 +3,18 @@
 // const file_name: string = "mcfly";
 // const path_to_file: string = path.join(__dirname, '')
 export type CommandEntry = {
-  id: string,
-  command: string,
-  category: string,
-  description: string,
-  weight: number
-}
+  id: string;
+  command: string;
+  category: string;
+  description: string;
+  weight: number;
+};
 
 export const getCategorized = (all: any) => {
   const categorized = [];
-  for (var i = 0; i < all.length; i++) {
-    var command = all[i];
-    var obj: any = Object.assign({}, command);
+  for (let i = 0; i < all.length; i++) {
+    const command = all[i];
+    const obj: any = { ...command };
     delete obj.category;
     if (command.category in categorized) {
       categorized[command.category].push(obj);
@@ -32,16 +32,15 @@ const sortByCommon = (all: any) => {
 };
 
 export const searchResults = (all: CommandEntry[], value: string) => {
-  var fits = all.filter((entry: CommandEntry) => {
+  const fits = all.filter((entry: CommandEntry) => {
     console.log(entry);
     const regex = new RegExp(`${value}`, 'gi');
     return entry.command.match(regex) || entry.description.match(regex);
   });
   return fits;
-}
+};
 
 // export const addCommand = (command: CommandEntry) => {
-
 
 // }
 
