@@ -14,7 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-
+import {getCategorized, searchResults} from './dataParser';
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -85,9 +85,14 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
+
   if (isDebug) {
     await installExtensions();
   }
+
+  // const all = require('../../assets/temp.json');
+  // var fits = searchResults(all, "cluster");
+  // var cat = getCategorized(all);
 
   const RESOURCES_PATH = app.isPackaged
     ? path.join(process.resourcesPath, 'assets')
