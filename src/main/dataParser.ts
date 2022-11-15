@@ -21,12 +21,13 @@ export class DataParser {
   }
 
   commandExists = (command: CommandEntry): boolean => {
+    var exists = false;
     this.commands_json_arr.forEach((entry: CommandEntry) => {
       if (entry.command === command.command) {
-        return true;
+        exists = true;
       }
     });
-    return false;
+    return exists;
   };
 
   getCategorized = () => {
