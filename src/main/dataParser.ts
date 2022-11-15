@@ -30,7 +30,7 @@ export class DataParser {
   }
 
   getCategorized = () => {
-    const categorized = [];
+    const categorized: any = {};
     for (var i = 0; i < this.commands_json_arr.length; i++) {
       var command = this.commands_json_arr[i];
       var obj: any = Object.assign({}, command);
@@ -67,10 +67,10 @@ export class DataParser {
     fs.writeFileSync(file_path, JSON.stringify(this.commands_json_arr));
   };
 
-  setWeight = (command: string, weight: number) => {
+  increaseWeight = (command: string) => {
     this.commands_json_arr.forEach((entry: CommandEntry) => {
       if (entry.command == command) {
-        entry.weight = weight;
+        entry.weight++;
       }
     });
     fs.writeFileSync(file_path, JSON.stringify(this.commands_json_arr));

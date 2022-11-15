@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchBar from 'material-ui-search-bar';
 import './App.css';
 import { CommandEntry } from '../main/dataParser';
+import ScrollableTabsButtonAuto from './Tabs';
 
 const { ipcRenderer } = window.electron;
 
@@ -17,6 +18,7 @@ const TOP_COMMANDS_LENGTH = 2;
 const McFly = () => {
   const [commands, setCommands] = useState([]);
   const [filteredCommands, setFilteredCommands] = useState([]);
+  const [categorized, setCategorized] = useState({});
   const [frequentCommands, setFrequentCommands] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -31,16 +33,17 @@ const McFly = () => {
   useEffect((): any => {
     ipcRenderer.sendMessage('data-fetcher', ['ping']);
 
-    ipcRenderer.on('data-fetcher', (commandData: Array) => {
-      setCommands(commandData);
-      setFilteredCommands(commandData);
+    ipcRenderer.on('data-fetcher', (commandData: any) => {
+      setCommands(commandData.all_commands);
+      setFilteredCommands(commandData.all_commands);
+      setCategorized(commandData.categorized);
       const sorted = commandData
         .sort((cmd: CommandEntry, otherCmd: CommandEntry) => {
           return cmd.weight - otherCmd.weight;
         })
         .slice(0, TOP_COMMANDS_LENGTH);
       setFrequentCommands(sorted);
-    });
+     });
   }, []);
 
   const onAddButtonClick = () => {
@@ -81,7 +84,8 @@ const McFly = () => {
         </List>
       </div>
       <div className="Commands">
-        <List
+        {Object.keys(categorized).length > 0 && <ScrollableTabsButtonAuto commandsByCategory={categorized}/>}
+        {/* <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
               All commands
@@ -93,7 +97,7 @@ const McFly = () => {
               <ListItemText primary={cmd.description} secondary={cmd.command} />
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { DataParser } from './dataParser';
 
 class AppUpdater {
   constructor() {
@@ -26,8 +27,13 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('data-fetcher', async (event, arg) => {
-  const all = require('../../assets/commands.json');
-  event.reply('data-fetcher', all);
+  // const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+  // console.log(`IPC test: ${pingPong}`);
+  // const all = require('../../assets/commands.json');
+  const parser = new DataParser();
+  const categorized = parser.getCategorized();
+  var result = {"all_commands": parser.commands_json_arr, "categorized":categorized};
+  event.reply('data-fetcher', result);
 });
 
 ipcMain.on('add-command', async (event, arg) => {
