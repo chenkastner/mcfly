@@ -60,8 +60,8 @@ function a11yProps(index: any) {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    flexGrow: 1,
-    width: '100%',
+    // flexGrow: 1,
+    // width: '100%',
     // backgroundColor: theme.palette.background.paper,
   },
 }));
@@ -78,9 +78,8 @@ export default function ScrollableTabsButton(props: any) {
     setValue(newValue);
   };
 
-
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar position="static">
         <Tabs
           value={value}

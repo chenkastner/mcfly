@@ -22,12 +22,12 @@ export class DataParser {
 
   commandExists = (command: CommandEntry): boolean => {
     this.commands_json_arr.forEach((entry: CommandEntry) => {
-      if (entry.command == command.command) {
+      if (entry.command === command.command) {
         return true;
       }
     });
     return false;
-  }
+  };
 
   getCategorized = () => {
     const categorized: any = {};
@@ -47,7 +47,6 @@ export class DataParser {
   };
 
   sortByCommon = () => {
-
     var commands_sorted = JSON.parse(JSON.stringify(this.commands_json_arr));
     commands_sorted.sort((cmd: CommandEntry, otherCmd: CommandEntry) => {
       return otherCmd.weight - cmd.weight;
@@ -56,7 +55,10 @@ export class DataParser {
   };
 
   addCommand = (command: CommandEntry) => {
-    if(this.commandExists(command)) return;
+    if (this.commandExists(command)) {
+      console.log(`Command already exists! Not adding ${command}`);
+      return;
+    };
     this.commands_json_arr.push(command);
     fs.writeFileSync(file_path, JSON.stringify(this.commands_json_arr));
   };

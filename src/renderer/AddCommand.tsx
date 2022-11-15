@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './AddCommand.css';
 import { CommandEntry } from '../main/dataParser';
 
-const { ipcRenderer } = window.electron;
+// const { ipcRenderer } = window.electron;
 
 const AddCommand = () => {
   return (

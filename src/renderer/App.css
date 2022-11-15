@@ -4,14 +4,6 @@
  */
 body {
   position: relative;
-  color: white;
-  /*height: 100vh;*/
-  background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  );
   font-family: sans-serif;
   overflow-y: scroll;
   display: flex;
@@ -55,9 +47,21 @@ a:hover {
 }
 
 .Commands {
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
+  max-width: 1000px;
+  width: 1000px;
+  margin: 20px 0;
+  border: 1px solid;
+}
+
+.tabs {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  max-width: 1000px;
+  width: 1000px;
   margin: 20px 0;
   border: 1px solid;
 }
@@ -79,4 +83,29 @@ a:hover {
 
 .addBtn {
   font-size: larger;
+}
+
+.Modal {
+  position: absolute;
+  top: 140px;
+  left: 140px;
+  right: 140px;
+  bottom: 140px;
+  background: #fedc2a;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  & .MuiTextField-root {
+    margin: 1px;
+    margin-bottom: 10px;
+    max-width: 200px;
+   }
+}
+
+.modalAddButton {
+  width: 230px;
 }

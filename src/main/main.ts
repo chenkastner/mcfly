@@ -14,7 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { DataParser } from './dataParser';
+import {CommandEntry, DataParser} from './dataParser';
 
 class AppUpdater {
   constructor() {
@@ -25,6 +25,13 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
+
+ipcMain.on('add-command', async (event, command: CommandEntry) => {
+  const parser = new DataParser();
+  command.weight = 1;
+  parser.addCommand(command);
+  event.reply('add-command', 'Command added');
+});
 
 ipcMain.on('data-fetcher', async (event, arg) => {
   const parser = new DataParser();
