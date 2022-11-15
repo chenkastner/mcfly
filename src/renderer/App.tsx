@@ -71,6 +71,11 @@ const McFly = () => {
     setIsOpen(false);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+
   return (
     <div>
       <h1>
@@ -118,11 +123,15 @@ const McFly = () => {
         </div>
       </Modal>
       <div className="headerLine">
-        <SearchBar
-          className="searchBar"
+        <TextField
+          id="searchBar"
+          label="Search..."
+          type="search"
+          variant="outlined"
           value={searchQuery}
-          onChange={(newValue) => setSearchQuery(newValue)}
-        />
+          onChange={handleSearchChange}
+          autoFocus={true}
+          />
         <IconButton
           color="primary"
           style={{ fontSize: 50, marginRight: 3 }}

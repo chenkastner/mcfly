@@ -72,8 +72,11 @@ export default function ScrollableTabsButton(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const {commandsByCategory, frequentCommands} = props;
-  const categories: string[] = Object.keys(commandsByCategory);
-
+  const categories: string[] = Object.keys(commandsByCategory).sort();
+  const rebuiltCategories = [
+    ...categories.filter((category) => category == "all" || category == "frequent"),
+    ...categories.filter((category) => category != "all" && category != "frequent")
+  ];
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
@@ -84,18 +87,16 @@ export default function ScrollableTabsButton(props: any) {
         <Tabs
           value={value}
           onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-         {categories && categories.map((label: string, i: number) => {
-            return ( <Tab label={label} {...a11yProps(i)}/>);
+         {rebuiltCategories && rebuiltCategories.map((label: string, i: number) => {
+            return ( <Tab  label={label}/>);
           })}
         </Tabs>
       </AppBar>
-          {categories && categories.map((category: string, index:number) => {
+          {rebuiltCategories && rebuiltCategories.map((category: string, index:number) => {
             return (<TabPanel value={value} index={index} commands_by_category={commandsByCategory[category]}></TabPanel>);
           })}
     </div>
