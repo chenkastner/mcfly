@@ -3,13 +3,14 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import CallToActionOutlinedIcon from '@material-ui/icons/CallToActionOutlined';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import './App.css';
 import { CommandEntry } from '../main/dataParser';
 const { ipcRenderer } = window.electron;
-
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -28,11 +29,9 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
       aria-labelledby={`scrollable-auto-tab-${index}`}
-      {...other}
-    >
+      {...other}>
       {value === index && (
         <div>
-          {/* This is the tabs content */}
           <List>
           {commands_by_category.map((cmd: CommandEntry) => (
             <ListItem
@@ -42,7 +41,10 @@ function TabPanel(props: TabPanelProps) {
                 ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
                 ipcRenderer.sendMessage('increase-weight', cmd.command);
               }}>
-              <ListItemText primary={cmd.command}/>
+              <ListItemIcon>
+                <CallToActionOutlinedIcon style={{ color: 'gold'}} />
+              </ListItemIcon>
+              <ListItemText className="listCommand" primary={cmd.description} secondary={cmd.command}/>
             </ListItem>
           ))}
         </List>
@@ -84,10 +86,12 @@ export default function ScrollableTabsButton(props: any) {
 
   return (
     <div>
-      <AppBar position="static">
+      <AppBar position="static" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
+          indicatorColor="secondary"
+          textColor="secondary"
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
