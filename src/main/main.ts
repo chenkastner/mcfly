@@ -46,6 +46,12 @@ ipcMain.on('minimize-on-copy', async (event, arg) => {
   BrowserWindow.getFocusedWindow()?.minimize();
 });
 
+ipcMain.on('increase-weight', async (event, command: string) => {
+  const parser = new DataParser();
+  parser.increaseWeight(command);
+  event.reply('increase-weight', 'Weight increased for ' + command);
+});
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

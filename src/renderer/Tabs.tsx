@@ -40,6 +40,7 @@ function TabPanel(props: TabPanelProps) {
               onClick={() => {
                 navigator.clipboard.writeText(cmd.command);
                 ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
+                ipcRenderer.sendMessage('increase-weight', cmd.command);
               }}>
               <ListItemText primary={cmd.command}/>
             </ListItem>
@@ -71,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function ScrollableTabsButton(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const {commandsByCategory, frequentCommands} = props;
+  const {commandsByCategory} = props;
   const categories: string[] = Object.keys(commandsByCategory).sort();
   const rebuiltCategories = [
     ...categories.filter((category) => category == "all" || category == "frequent"),
