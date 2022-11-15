@@ -3,12 +3,12 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import './App.css';
 import { CommandEntry } from '../main/dataParser';
+const { ipcRenderer } = window.electron;
 
 
 interface TabPanelProps {
@@ -37,7 +37,10 @@ function TabPanel(props: TabPanelProps) {
           {commands_by_category.map((cmd: CommandEntry) => (
             <ListItem
               button
-              onClick={() => navigator.clipboard.writeText(cmd.command)}>
+              onClick={() => {
+                navigator.clipboard.writeText(cmd.command);
+                ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
+              }}>
               <ListItemText primary={cmd.command}/>
             </ListItem>
           ))}
@@ -65,16 +68,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export default function ScrollableTabsButtonAuto(props: any) {
+export default function ScrollableTabsButton(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const {commandsByCategory, frequentCommands} = props;
-  debugger;
   const categories: string[] = Object.keys(commandsByCategory);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
-    console.log("here new value: " + newValue);
   };
 
 

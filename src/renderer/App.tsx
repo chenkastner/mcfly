@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchBar from 'material-ui-search-bar';
 import './App.css';
 import { CommandEntry } from '../main/dataParser';
-import ScrollableTabsButtonAuto from './Tabs';
+import ScrollableTabsButton from './Tabs';
 
 const { ipcRenderer } = window.electron;
 
@@ -61,41 +61,24 @@ const McFly = () => {
           <AddRoundedIcon />
         </IconButton>
       </div>
-
-      {/* <div className="Commands">
-        <List
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              Frequently Used
-            </ListSubheader>}>
-          {frequentCommands.map((cmd: CommandEntry) => (
-            <ListItem
-              button
-              onClick={() => {
-                navigator.clipboard.writeText(cmd.command);
-                // window.minimize();
-              }}>
-              <ListItemText primary={cmd.description} secondary={cmd.command} />
-            </ListItem>
-          ))}
-        </List>
-      </div> */}
-      <div className="Commands">
-        {Object.keys(categorized).length > 0 && <ScrollableTabsButtonAuto commandsByCategory={categorized} frequentCommands={frequentCommands}/>}
-        {/* <List
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              All commands
-            </ListSubheader>}>
+      <div className="tabs">
+        {searchQuery.length == 0 && Object.keys(categorized).length > 0 && <ScrollableTabsButton commandsByCategory={categorized} frequentCommands={frequentCommands}/>}
+      </div>
+      {searchQuery.length > 0 && <div>
+          <List>
           {filteredCommands.map((cmd: CommandEntry) => (
             <ListItem
               button
-              onClick={() => navigator.clipboard.writeText(cmd.command)}>
-              <ListItemText primary={cmd.description} secondary={cmd.command} />
+              onClick={() => {
+                navigator.clipboard.writeText(cmd.command)
+                console.log("Minimizing window after command selection")
+                ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
+                }}>
+              <ListItemText primary={cmd.command}/>
             </ListItem>
           ))}
-        </List> */}
-      </div>
+        </List>
+        </div>}
     </div>
   );
 };
