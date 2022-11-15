@@ -33,29 +33,12 @@ ipcMain.on('data-fetcher', async (event, arg) => {
   event.reply('data-fetcher', result);
 });
 
-ipcMain.on('add-command', async (event, arg) => {
-  console.log('Open add command window');
-  const addCmdWindow = new BrowserWindow({
-    parent: mainWindow,
-    width: 668,
-    height: 364,
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false,
-    },
-  });
 
-  addCmdWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, '../build/index.html'),
-      protocol: 'file:',
-      slashes: true,
-      query: {
-        page: 'videoCall',
-      },
-    })
-  )
+ipcMain.on('minimize-on-copy', async (event, arg) => {
+  console.log('minimizing window...');
+  BrowserWindow.getFocusedWindow()?.minimize();
 });
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

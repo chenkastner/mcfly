@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import './App.css';
 import { CommandEntry } from '../main/dataParser';
+const { ipcRenderer } = window.electron;
 
 
 interface TabPanelProps {
@@ -36,7 +37,10 @@ function TabPanel(props: TabPanelProps) {
           {commands_by_category.map((cmd: CommandEntry) => (
             <ListItem
               button
-              onClick={() => navigator.clipboard.writeText(cmd.command)}>
+              onClick={() => {
+                navigator.clipboard.writeText(cmd.command);
+                ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
+              }}>
               <ListItemText primary={cmd.command}/>
             </ListItem>
           ))}
@@ -68,12 +72,10 @@ export default function ScrollableTabsButton(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const {commandsByCategory, frequentCommands} = props;
-  debugger;
   const categories: string[] = Object.keys(commandsByCategory);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
-    console.log("here new value: " + newValue);
   };
 
 

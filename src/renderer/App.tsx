@@ -71,7 +71,8 @@ const McFly = () => {
               button
               onClick={() => {
                 navigator.clipboard.writeText(cmd.command)
-                window.
+                console.log("Minimizing window after command selection")
+                ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
                 }}>
               <ListItemText primary={cmd.command}/>
             </ListItem>
