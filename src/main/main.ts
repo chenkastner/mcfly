@@ -14,7 +14,6 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { getCategorized } from './dataParser';
 
 class AppUpdater {
   constructor() {
@@ -27,11 +26,32 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('data-fetcher', async (event, arg) => {
-  // const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  // console.log(`IPC test: ${pingPong}`);
   const all = require('../../assets/commands.json');
-  // var cat = getCategorized(all);
   event.reply('data-fetcher', all);
+});
+
+ipcMain.on('add-command', async (event, arg) => {
+  console.log('Open add command window');
+  const addCmdWindow = new BrowserWindow({
+    parent: mainWindow,
+    width: 668,
+    height: 364,
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false,
+    },
+  });
+
+  addCmdWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      protocol: 'file:',
+      slashes: true,
+      query: {
+        page: 'videoCall',
+      },
+    })
+  )
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -106,8 +126,21 @@ const createWindow = async () => {
   menuBuilder.buildMenu();
 
   // Open urls in the user's browser
-  mainWindow.webContents.setWindowOpenHandler((edata) => {
-    shell.openExternal(edata.url);
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url === 'about:blank') {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          frame: false,
+          fullscreenable: false,
+          backgroundColor: 'black',
+          webPreferences: {
+            preload: 'my-child-window-preload-script.js',
+          },
+        },
+      };
+    }
+    shell.openExternal(url);
     return { action: 'deny' };
   });
 
