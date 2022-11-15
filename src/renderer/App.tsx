@@ -25,7 +25,7 @@ const McFly = () => {
   const [commands, setCommands] = useState([]);
   const [filteredCommands, setFilteredCommands] = useState([]);
   const [categorized, setCategorized] = useState({});
-  const [frequentCommands, setFrequentCommands] = useState([]);
+  // const [frequentCommands, setFrequentCommands] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -47,15 +47,19 @@ const McFly = () => {
     ipcRenderer.on('data-fetcher', (commandData: any) => {
       setCommands(commandData.all_commands);
       setFilteredCommands(commandData.all_commands);
-      setCategorized(commandData.categorized);
       const sorted = commandData.categorized.frequent.slice(
         0,
         TOP_COMMANDS_LENGTH
-      );
-      setFrequentCommands(sorted);
+        );
+        commandData.categorized.frequent = sorted;
+      setCategorized(commandData.categorized);
     });
 
     ipcRenderer.on('add-command', () => {
+      ipcRenderer.sendMessage('data-fetcher', ['ping']);
+    });
+
+    ipcRenderer.on('increase-weight', () => {
       ipcRenderer.sendMessage('data-fetcher', ['ping']);
     });
   }, []);
@@ -134,6 +138,7 @@ const McFly = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           autoFocus={true}
+
           />
         <IconButton
           color="primary"
@@ -144,12 +149,11 @@ const McFly = () => {
         </IconButton>
       </div>
         {searchQuery.length === 0 && Object.keys(categorized).length > 0 && (
-          <div className="tabs">
-            <ScrollableTabsButton
-              commandsByCategory={categorized}
-              frequentCommands={frequentCommands}
-            />
-          </div>
+        <div className="tabs">
+          <ScrollableTabsButton
+            commandsByCategory={categorized}
+          />
+        </div>
         )}
       {searchQuery.length > 0 && (
         <div className="Commands">
@@ -161,6 +165,8 @@ const McFly = () => {
                   navigator.clipboard.writeText(cmd.command);
                   console.log('Minimizing window after command selection');
                   ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
+                  ipcRenderer.sendMessage('increase-weight', cmd.command);
+
                 }}>
                 <ListItemIcon>
                   <CallToActionOutlinedIcon style={{ color: 'gold'}} />
