@@ -5,10 +5,11 @@
 body {
   position: relative;
   font-family: sans-serif;
-  overflow-y: scroll;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: black;
+  color: white;
 }
 
 button {
@@ -52,8 +53,11 @@ a:hover {
   align-items: center;
   max-width: 1000px;
   width: 1000px;
+  height: 500px;
+  max-height: 500px;
   margin: 20px 0;
   border: 1px solid;
+  background: #303030;
 }
 
 .tabs {
@@ -62,8 +66,11 @@ a:hover {
   align-items: center;
   max-width: 1000px;
   width: 1000px;
+  height: 500px;
+  max-height: 500px;
   margin: 20px 0;
-  border: 1px solid;
+  overflow-y: scroll;
+  background: #303030;
 }
 
 .mcListItem {
@@ -72,13 +79,20 @@ a:hover {
   padding: 10px;
 }
 
-.searchBar {
+#searchBar {
   max-width: 600px;
+  background: white;
+  border-radius: 19px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .headerLine {
   display: flex;
   justify-content: space-between;
+  color: white;
 }
 
 .addBtn {
@@ -108,4 +122,12 @@ a:hover {
 
 .modalAddButton {
   width: 230px;
+}
+
+.listCommand {
+  color: white;
+}
+
+.searchBar {
+  color: white;
 }
