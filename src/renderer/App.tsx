@@ -149,10 +149,11 @@ const McFly = () => {
         </IconButton>
       </div>
         {searchQuery.length === 0 && Object.keys(categorized).length > 0 && (
+        <div className="tabs">
           <ScrollableTabsButton
             commandsByCategory={categorized}
-            // frequentCommands={frequentCommands}
           />
+        </div>
         )}
       {searchQuery.length > 0 && (
         <div className="Commands">
