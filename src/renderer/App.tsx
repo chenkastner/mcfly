@@ -6,12 +6,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SearchBar from 'material-ui-search-bar';
 import './App.css';
 import { CommandEntry } from '../main/dataParser';
+import ScrollableTabsButtonAuto from './Tabs';
 
 const { ipcRenderer } = window.electron;
 
 const McFly = () => {
   const [commands, setCommands] = useState([]);
   const [filteredCommands, setFilteredCommands] = useState([]);
+  const [categorized, setCategorized] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect((): any => {
@@ -25,9 +27,11 @@ const McFly = () => {
   useEffect((): any => {
     ipcRenderer.sendMessage('data-fetcher', ['ping']);
 
-    ipcRenderer.on('data-fetcher', (commandData: Array) => {
-      setCommands(commandData);
-      setFilteredCommands(commandData);
+    ipcRenderer.on('data-fetcher', (commandData: any) => {
+      setCommands(commandData.all_commands);
+      setFilteredCommands(commandData.all_commands);
+      setCategorized(commandData.categorized);
+
     });
   }, []);
 
@@ -39,7 +43,8 @@ const McFly = () => {
         onChange={(newValue) => setSearchQuery(newValue)}
       />
       <div className="Hello">
-        <List>
+        {Object.keys(categorized).length > 0 && <ScrollableTabsButtonAuto commandsByCategory={categorized}/>}
+        {/* <List>
           {filteredCommands.map((cmd: CommandEntry) => (
             <ListItem
               button
@@ -47,7 +52,7 @@ const McFly = () => {
               <ListItemText primary={cmd.command} />
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </div>
     </div>
   );

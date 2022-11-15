@@ -14,7 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { getCategorized } from './dataParser';
+import { DataParser } from './dataParser';
 
 class AppUpdater {
   constructor() {
@@ -29,10 +29,13 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on('data-fetcher', async (event, arg) => {
   // const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   // console.log(`IPC test: ${pingPong}`);
-  const all = require('../../assets/commands.json');
-  // var cat = getCategorized(all);
-  event.reply('data-fetcher', all);
+  // const all = require('../../assets/commands.json');
+  const parser = new DataParser();
+  const categorized = parser.getCategorized();
+  var result = {"all_commands": parser.commands_json_arr, "categorized":categorized};
+  event.reply('data-fetcher', result);
 });
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
