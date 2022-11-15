@@ -3,7 +3,6 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -65,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export default function ScrollableTabsButtonAuto(props: any) {
+export default function ScrollableTabsButton(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const {commandsByCategory, frequentCommands} = props;
