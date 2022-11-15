@@ -41,13 +41,18 @@ export class DataParser {
         categorized[command.category] = [obj];
       }
     }
+    categorized["all"] = this.commands_json_arr;
+    categorized["frequent"] = this.sortByCommon();
     return categorized;
   };
 
   sortByCommon = () => {
-    this.commands_json_arr.sort(function (a: any, b: any) {
-      return b.weight.localeCompare(a.weight);
+
+    var commands_sorted = JSON.parse(JSON.stringify(this.commands_json_arr));
+    commands_sorted.sort((cmd: CommandEntry, otherCmd: CommandEntry) => {
+      return otherCmd.weight - cmd.weight;
     });
+    return commands_sorted;
   };
 
   addCommand = (command: CommandEntry) => {
