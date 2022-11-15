@@ -27,9 +27,6 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('data-fetcher', async (event, arg) => {
-  // const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  // console.log(`IPC test: ${pingPong}`);
-  // const all = require('../../assets/commands.json');
   const parser = new DataParser();
   const categorized = parser.getCategorized();
   var result = {"all_commands": parser.commands_json_arr, "categorized":categorized};

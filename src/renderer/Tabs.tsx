@@ -31,18 +31,18 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <div>
           {/* This is the tabs content */}
           <List>
           {commands_by_category.map((cmd: CommandEntry) => (
             <ListItem
               button
               onClick={() => navigator.clipboard.writeText(cmd.command)}>
-              <ListItemText primary={cmd.command} />
+              <ListItemText primary={cmd.command}/>
             </ListItem>
           ))}
         </List>
-        </Box>
+        </div>
       )}
     </div>
   );
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
   },
 }));
 
@@ -68,38 +68,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function ScrollableTabsButtonAuto(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const {commandsByCategory} = props;
+  const {commandsByCategory, frequentCommands} = props;
   debugger;
   const categories: string[] = Object.keys(commandsByCategory);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
+    console.log("here new value: " + newValue);
   };
 
-  const TabsArray = ({labels}: {labels: string[]}) => {
-    console.log(labels);
-    return (
-      <div>
-          {labels && labels.map((label: string, i: number) => {
-            return ( <Tab label={label} {...a11yProps(i)}/>);
-          })}
-      </div>
-    );
-  }
-
-  const TabsPanelArr = ({categories}: {categories: string[]}) => {
-    return (
-      <div>
-          {categories && categories.map((category: string, index:number) => {
-            return (<TabPanel value={value} index={index} commands_by_category={commandsByCategory[category]}></TabPanel>);
-          })}
-      </div>
-    );
-  }
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar position="static">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -109,10 +90,15 @@ export default function ScrollableTabsButtonAuto(props: any) {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <TabsArray labels={categories}/>
+         {categories && categories.map((label: string, i: number) => {
+            return ( <Tab label={label} {...a11yProps(i)}/>);
+          })}
         </Tabs>
       </AppBar>
-      <TabsPanelArr categories={categories}/>
+          {categories && categories.map((category: string, index:number) => {
+            return (<TabPanel value={value} index={index} commands_by_category={commandsByCategory[category]}></TabPanel>);
+          })}
     </div>
   );
 }
+

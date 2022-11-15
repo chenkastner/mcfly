@@ -34,14 +34,11 @@ const McFly = () => {
     ipcRenderer.sendMessage('data-fetcher', ['ping']);
 
     ipcRenderer.on('data-fetcher', (commandData: any) => {
+      debugger;
       setCommands(commandData.all_commands);
       setFilteredCommands(commandData.all_commands);
       setCategorized(commandData.categorized);
-      const sorted = commandData
-        .sort((cmd: CommandEntry, otherCmd: CommandEntry) => {
-          return cmd.weight - otherCmd.weight;
-        })
-        .slice(0, TOP_COMMANDS_LENGTH);
+      const sorted = commandData.categorized.frequent.slice(0, TOP_COMMANDS_LENGTH);
       setFrequentCommands(sorted);
      });
   }, []);
@@ -65,7 +62,7 @@ const McFly = () => {
         </IconButton>
       </div>
 
-      <div className="Commands">
+      {/* <div className="Commands">
         <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
@@ -82,9 +79,9 @@ const McFly = () => {
             </ListItem>
           ))}
         </List>
-      </div>
+      </div> */}
       <div className="Commands">
-        {Object.keys(categorized).length > 0 && <ScrollableTabsButtonAuto commandsByCategory={categorized}/>}
+        {Object.keys(categorized).length > 0 && <ScrollableTabsButtonAuto commandsByCategory={categorized} frequentCommands={frequentCommands}/>}
         {/* <List
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
