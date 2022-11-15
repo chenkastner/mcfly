@@ -29,6 +29,7 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on('add-command', async (event, command: CommandEntry) => {
   const parser = new DataParser();
   command.weight = 1;
+  command.category = command.category.toLowerCase();
   parser.addCommand(command);
   event.reply('add-command', 'Command added');
 });
@@ -113,6 +114,7 @@ const createWindow = async () => {
       mainWindow.minimize();
     } else {
       mainWindow.show();
+      ipcMain.send
     }
   });
 

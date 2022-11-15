@@ -44,3 +44,11 @@ a:hover {
   opacity: 1;
   text-decoration: none;
 }
+
+.modalAddButton {
+  width: 150px;
+}
+
+.commandInput{
+
+}

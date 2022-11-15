@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
+import AddCircleSharpIcon from '@material-ui/icons/AddCircleSharp';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -19,7 +20,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 
 const { ipcRenderer } = window.electron;
 
-const TOP_COMMANDS_LENGTH = 2;
+const TOP_COMMANDS_LENGTH = 5;
 
 const McFly = () => {
   const [commands, setCommands] = useState([]);
@@ -32,6 +33,7 @@ const McFly = () => {
   const [command, setCommand] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  const [searchFocus, setSearchFocus] = useState(true);
 
   useEffect((): any => {
     const filtered = commands.filter((entry: CommandEntry) => {
@@ -62,6 +64,11 @@ const McFly = () => {
     ipcRenderer.on('increase-weight', () => {
       ipcRenderer.sendMessage('data-fetcher', ['ping']);
     });
+
+    ipcRenderer.on('window-appear', () => {
+      setSearchFocus(true);
+    });
+
   }, []);
 
   const onAddButtonClick = () => {
@@ -75,6 +82,10 @@ const McFly = () => {
       category,
     };
     ipcRenderer.sendMessage('add-command', commandData);
+    setIsOpen(false);
+  };
+
+  const onAddButtonCancel = () => {
     setIsOpen(false);
   };
 
@@ -93,6 +104,7 @@ const McFly = () => {
           <TextField
             required
             id="outlined-basic"
+            className="commandInput"
             onChange={(event) => {
               const { value } = event.target;
               setDescription(value);
@@ -120,13 +132,22 @@ const McFly = () => {
             defaultValue=""
             label="Category"
           />
-          <Button
-            className="modalAddButton"
-            variant="contained"
-            onClick={onAddButtonSubmit}
-          >
-            Add command
-          </Button>
+          <div className="modalButtonsContainer">
+            <Button
+              className="modalAddButton"
+              variant="contained"
+              onClick={onAddButtonCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="modalAddButton"
+              variant="contained"
+              onClick={onAddButtonSubmit}
+            >
+              Add command
+            </Button>
+          </div>
         </div>
       </Modal>
       <div className="headerLine">
@@ -137,15 +158,14 @@ const McFly = () => {
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
-          autoFocus={true}
+          autoFocus={searchFocus}
 
           />
         <IconButton
-          color="primary"
-          style={{ fontSize: 50, marginRight: 3 }}
-          onClick={onAddButtonClick}
-        >
-          <AddRoundedIcon />
+          color="secondary"
+          fontSize="large"
+          onClick={onAddButtonClick}>
+          <AddCircleSharpIcon />
         </IconButton>
       </div>
         {searchQuery.length === 0 && Object.keys(categorized).length > 0 && (
@@ -164,6 +184,7 @@ const McFly = () => {
                 onClick={() => {
                   navigator.clipboard.writeText(cmd.command);
                   console.log('Minimizing window after command selection');
+                  setSearchQuery('')
                   ipcRenderer.sendMessage('minimize-on-copy', ['ping']);
                   ipcRenderer.sendMessage('increase-weight', cmd.command);
 

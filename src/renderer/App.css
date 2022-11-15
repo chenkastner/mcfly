@@ -80,7 +80,8 @@ a:hover {
 }
 
 #searchBar {
-  max-width: 600px;
+  max-width: 300px;
+  width: 300px;
   background: white;
   border-radius: 19px;
 
@@ -101,11 +102,13 @@ a:hover {
 
 .Modal {
   position: absolute;
-  top: 140px;
-  left: 140px;
+  top: 220px !important;
+  left: 325px !important;
   right: 140px;
   bottom: 140px;
-  background: #fedc2a;
+  background: beige;
+  width: 500px;
+  height: 280px;
 }
 
 .modalBody {
@@ -116,16 +119,26 @@ a:hover {
   & .MuiTextField-root {
     margin: 1px;
     margin-bottom: 10px;
-    max-width: 200px;
+    max-width: 457px;
    }
 }
 
-.modalAddButton {
-  width: 230px;
+.modalButtonsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 17px;
 }
 
 .listCommand {
   color: white;
+
+  & .MuiListItemText-secondary  {
+      color:white;
+    }
+
+  & .MuiListItemText-primary  {
+      color: gold;
+  }
 }
 
 .searchBar {
