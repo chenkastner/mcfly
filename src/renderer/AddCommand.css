@@ -53,30 +53,3 @@ a:hover {
   opacity: 1;
   text-decoration: none;
 }
-
-.Commands {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-  border: 1px solid;
-}
-
-.mcListItem {
-  border:1px solid;
-  margin-top: 20px;
-  padding: 10px;
-}
-
-.searchBar {
-  max-width: 600px;
-}
-
-.headerLine {
-  display: flex;
-  justify-content: space-between;
-}
-
-.addBtn {
-  font-size: larger;
-}
